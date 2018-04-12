@@ -145,5 +145,71 @@ public class ListTests {
         assert wasCaught : "NullPointerException has not been caught";
     }
 
+    public static void addAllShouldPropertlyAddCollectionInTheMiddleOfList() {
+        // given
+        final String willBeLast = "second";
+        list.add("first");
+        list.add(willBeLast);
+        // when
+        boolean wasAdded = list.addAll(1,getExampleSet());
+        // then
+        assert wasAdded : "Collection has not been added";
+        assert list.get(1).equals(FIRST_TO_ADD) : "First from added elements is not correct";
+        assert list.get(3).equals(LAST_TO_ADD) : "Last from added elements is not correct";
+        assert list.get(4).equals(willBeLast) : "Last element before add before them is not on last position after add";
+    }
+
+    public static void addAllCollectionOnPositionLessThenZeroShouldThrowExceptionTest() {
+        // given
+        boolean wasCaught = false;
+        // when
+        try  {
+            list.addAll(-1, getExampleSet());
+        } catch (IndexOutOfBoundsException e) {
+            wasCaught = true;
+        }
+        // then
+        assert wasCaught : "Exception has not been caught";
+    }
+
+    public static void addAllColectionOnPositionBiggerThenLastElementShouldThrowExceptionTest() {
+        // given
+        boolean wasCaught = false;
+        list.add("first");
+        // when
+        try  {
+            list.addAll(2, getExampleSet());
+        } catch (IndexOutOfBoundsException e) {
+            wasCaught = true;
+        }
+        // then
+        assert wasCaught : "Exception has not been caught";
+    }
+
+    public static void clearShouldRemoveAllElementsFromList() {
+        // given
+        String elemToAdd = "one";
+        list.add(elemToAdd);
+        list.add("two");
+        list.add("three");
+        // when
+        list.clear();
+        // then
+        assert !list.contains(elemToAdd) : "List contain element added before clear";
+    }
+
+    public static void clearShouldChangeSizeToZero() {
+        // given
+        list.add("one");
+        // when
+        list.clear();
+        // then
+        assert list.size()==0 : "List contain element added before clear";
+    }
+
+//    public static void clear
 
 }
+
+
+// TODO: Own testing framework to make independent tests

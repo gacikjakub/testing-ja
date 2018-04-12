@@ -17,9 +17,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <compilerVersion>1.8</compilerVersion>
-                    <target>1.8</target>
-                    <source>1.8</source>
+                    <compilerVersion>1.9</compilerVersion>
+                    <target>1.9</target>
+                    <source>1.9</source>
                     <compilerArgs>
                         <arg>-Xlint:all,-processing</arg>
                     </compilerArgs>
