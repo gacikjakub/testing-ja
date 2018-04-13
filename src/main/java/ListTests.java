@@ -1,6 +1,6 @@
-
 import java.util.*;
 import java.lang.reflect.*;
+import java.util.logging.Level;
 
 public class ListTests {
 
@@ -186,7 +186,7 @@ public class ListTests {
         assert wasCaught : "Exception has not been caught";
     }
 
-    public static void clearShouldRemoveAllElementsFromList() {
+    public static void clearShouldRemoveAllElementsFromListTest() {
         // given
         String elemToAdd = "one";
         list.add(elemToAdd);
@@ -198,7 +198,7 @@ public class ListTests {
         assert !list.contains(elemToAdd) : "List contain element added before clear";
     }
 
-    public static void clearShouldChangeSizeToZero() {
+    public static void clearShouldChangeSizeToZeroTest() {
         // given
         list.add("one");
         // when
@@ -207,7 +207,201 @@ public class ListTests {
         assert list.size()==0 : "List contain element added before clear";
     }
 
-//    public static void clear
+    public static void clearCanBeUsedOnEmptyListTest() {
+        // given
+        boolean wasCaught = false;
+        // when
+        try {
+            list.clear();
+        } catch (Exception e) {
+            wasCaught = true;
+        }
+        // then
+        assert list.isEmpty() : "List is not empty after clear";
+        assert !wasCaught : "Exception has been caught";
+    }
+
+    public static void containsShouldReturnTrueIfElementIsInTheListTest() {
+        // given
+        list.add(FIRST_TO_ADD);
+        // when - then
+        assert list.contains(FIRST_TO_ADD) : "Contains did not find element which in fact is in the list";
+    }
+
+    public static void containsAllowExecuteWithNullAsArgumentTest() {
+        // given
+        boolean wasCaught = false;
+        boolean wasReturned = false;
+        list.add(null);
+        // when
+        try {
+            wasReturned = list.contains(null);
+        } catch (Exception e) {
+            wasCaught = true;
+        }
+        // then
+        assert !wasCaught : "Exception has been caught";
+        assert wasReturned: "contains(null) returned false, but null was added to List";
+    }
+
+    public static void containsShouldReturnFalseIfElementIsNotInListTest() {
+        // given
+        list.add(FIRST_TO_ADD);
+        // when - then
+        assert !list.contains(LAST_TO_ADD) : "Contains returned true, but in fact should returned false because element is not in the list";
+    }
+
+    public static void constainsAllShouldReturnTrueWhenThisListHasAllEmenetsFromSpecifiedColectionTest() {
+        // given
+        list.add("first");
+        list.addAll(getExampleSet());
+        list.add("last");
+        // when - then
+        assert list.containsAll(getExampleSet()) : "ConstainsAll returned false when actually list has all elements from specified collection";
+    }
+
+    public static void constainsAllShouldReturnTrueWhenThisListHasAllEmenetsFromSpecifiedColectionNotInRowTest() {
+        // given
+        list.add("first");
+        list.addAll(getExampleSet());
+        list.add(2, "last");
+        // when - then
+        assert list.containsAll(getExampleSet()) : "ConstainsAll returned false when actually list has all elements from specified collection";
+    }
+
+    public static void containsAllShouldThrowNullPointerExceptionWhenSpecifiedCollectionIsNullTest() {
+        // given
+        boolean wasCaught = false;
+        // when
+        try {
+            list.containsAll(null);
+        } catch (Exception e) {
+            wasCaught = true;
+        }
+        // then
+        assert wasCaught : "Exception has not been Caught";
+    }
+
+    private static List getTheSameTypeOfList(List l) {
+        try {
+            return l.getClass().getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static void equalsReturnTrueWhenTwoListHasTheSameElementsInTheSameOrderTest() {
+        // given
+        list.addAll(getExampleSet());
+        List<String> list2 = getTheSameTypeOfList(list);
+        list2.addAll(getExampleSet());
+        // when - then
+        assert list.equals(list2) : "Equals returned false when in fact lists has the same elements and the same arder";
+    }
+
+    public static void equalsReturnFalseWhenTwoListHasTheSameElementsInDifferentOrderTest() {
+        // given
+        String toAdd = "This text must be unique";
+        list.add(toAdd);
+        list.addAll(getExampleSet());
+        List<String> list2 = getTheSameTypeOfList(list);
+        list2.addAll(getExampleSet());
+        list2.add(toAdd);
+        // when - then
+        assert !list.equals(list2) : "Equals returned false when in fact lists has the same elements and the same arder";
+    }
+
+    public static void equalsReturnFalseWhenCompareTwoDifferentTypesCollectionAlthoughTheHaveTheSameElementsInTheSameOrderTest() {
+        // given
+        list.addAll(getExampleSet());
+        // when - then
+        assert !list.equals(getExampleSet()) : "Equals returned true when in fact it compared different types of collection although the same order of elements";
+    }
+
+    public static void getReturnElementFromListCorrectlyTest() {
+        // given
+        list.add("This is also unique - first");
+        list.addAll(getExampleSet());
+        // when - then
+        assert list.get(1).equals(FIRST_TO_ADD) : "Get returned incorrect element";
+    }
+
+    public static void getThrowIndexOfBoundExceptionWhenGivenArgumentIsLowerThenZeroTest() {
+        // given
+        boolean wasCaught = false;
+        list.addAll(getExampleSet());
+        // when
+        try {
+            list.get(-1);
+        } catch (IndexOutOfBoundsException e) {
+            wasCaught = true;
+        }
+        // then
+        assert wasCaught : "Exception has not been caught";
+    }
+
+    public static void getThrowIndexOfBoundExceptionWhenGivenArgumentIsBiggerThenSizeTest() {
+        // given
+        boolean wasCaught = false;
+        list.addAll(getExampleSet());
+        // when
+        try {
+            list.get(10);
+        } catch (IndexOutOfBoundsException e) {
+            wasCaught = true;
+        }
+        // then
+        assert wasCaught : "Exception has not been caught";
+    }
+
+    public static void twoListsWithTheSameContentShouldHaveTheSameHashCodesTest() {
+        // given
+        list.addAll(getExampleSet());
+        List<String> list2 = getTheSameTypeOfList(list);
+        list2.addAll(getExampleSet());
+        // when - then
+        assert list.hashCode() == list2.hashCode() : "Same lists have the different hashCode";
+    }
+
+    public static void twoListsWithDifferentContentShouldDifferentHashCodesTest() {
+        // given
+        list.addAll(getExampleSet());
+        List<String> list2 = getTheSameTypeOfList(list);
+        list2.add("different1");
+        list2.add("different2");
+        list2.add("different3");
+        // when - then
+        assert list.hashCode() != list2.hashCode() : "Different lists have the same hashCode";
+    }
+
+    public static void emptyListsHashCodeIsEqualOneTest() {
+        // when - then
+        assert list.hashCode() == 1 : "Empty list has hashCode different that one";
+        assert getTheSameTypeOfList(list).hashCode() == 1 : "Another empty list has hashCode different than one";
+    }
+
+    public static void indexOfReturnProperIndexOfFSearchedElementTest() {
+        // given
+        list.add("initElemOfList");
+        list.addAll(getExampleSet());
+        // when - then
+        assert list.indexOf(FIRST_TO_ADD) == 1 : "Returned first index in not correct";
+        assert list.indexOf(LAST_TO_ADD) == 3 : "Returned last index in not correct";
+    }
+
+    public static void indexOfReturnMinusOneValueWhenSearchedElementIsNotInListTest() {
+        // given
+        list.addAll(getExampleSet());
+        // when - then
+        assert list.indexOf("notExistingElem") == -1 : "Returned first index in not correct";
+    }
+
+    public static void indexOfReturn() {
+        // given
+        list.addAll(getExampleSet());
+        // when - then
+        assert list.indexOf("notExistingElem") == -1 : "Returned first index in not correct";
+    }
 
 }
 
