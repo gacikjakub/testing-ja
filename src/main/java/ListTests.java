@@ -396,11 +396,84 @@ public class ListTests {
         assert list.indexOf("notExistingElem") == -1 : "Returned first index in not correct";
     }
 
-    public static void indexOfReturn() {
+    public static void indexOfReturnFirstIndexOfTheSameObjectInListTest() {
+        // given
+        String toCheck = "toCheck";
+        list.addAll(getExampleSet());
+        list.add(toCheck);
+        list.addAll(getExampleSet());
+        list.add(toCheck);
+        // when - then
+        assert list.indexOf(toCheck) == 3 : "Returned first index in not correct";
+    }
+
+    public static void isEmptyReturnTrueWhenWasNothingAddedToListTest() {
+        // when - then
+        assert list.isEmpty() : "isEmpty returned false when in fact should return true";
+    }
+
+    public static void isEmptyReturnFalseWhenWasAddedAtLeastOneElementToListTest() {
+        // given
+        list.add(null);
+        // when - then
+        assert !list.isEmpty() : "isEmpty returned true when in fact should return false";
+    }
+
+    public static void isEmptyReturnTrueWhenSthWasAddedAndRemovedFromListTest() {
+        //given
+        String temp = "I'll be remove";
+        list.add(temp);
+        list.remove(temp);
+        // when - then
+        assert list.isEmpty() : "isEmpty returned false when in fact should return true";
+    }
+
+    public static void iteratorAllowToIterateInProperSequenceTest() {
+       // given
+       List<String> list2 = getTheSameTypeOfList(list);
+       list.addAll(getExampleSet());
+       list2.addAll(getExampleSet());
+       boolean isProperSequence = true;
+       int i = 0;
+       // when
+        Iterator<String> itr = list.iterator();
+       while(itr.hasNext()) {
+           String temp = itr.next();
+           if (!(temp.equals(list2.get(i)))) {
+               isProperSequence = false;
+               break;
+           }
+           i++;
+       }
+       // then
+       assert isProperSequence : "Iterator did not allow for iterate in proper sequence";
+    }
+
+    public static void lastIndexOfReturnProperIndexOfFSearchedElementTest() {
+        // given
+        list.add("initElemOfList");
+        list.addAll(getExampleSet());
+        // when - then
+        assert list.lastIndexOf(FIRST_TO_ADD) == 1 : "Returned first index in not correct";
+        assert list.lastIndexOf(LAST_TO_ADD) == 3 : "Returned last index in not correct";
+    }
+
+    public static void lastIndexOfReturnMinusOneValueWhenSearchedElementIsNotInListTest() {
         // given
         list.addAll(getExampleSet());
         // when - then
-        assert list.indexOf("notExistingElem") == -1 : "Returned first index in not correct";
+        assert list.lastIndexOf("notExistingElem") == -1 : "Returned first index in not correct";
+    }
+
+    public static void lastIndexOfReturnLastIndexOfTheSameObjectInListTest() {
+        // given
+        String toCheck = "toCheck";
+        list.addAll(getExampleSet());
+        list.add(toCheck);
+        list.addAll(getExampleSet());
+        list.add(toCheck);
+        // when - then
+        assert list.lastIndexOf(toCheck) == 7 : "Returned last index in not correct";
     }
 
 }
