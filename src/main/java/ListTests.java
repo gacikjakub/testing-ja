@@ -1,6 +1,5 @@
 import java.util.*;
 import java.lang.reflect.*;
-import java.util.logging.Level;
 
 public class ListTests {
 
@@ -428,25 +427,54 @@ public class ListTests {
         assert list.isEmpty() : "isEmpty returned false when in fact should return true";
     }
 
+    private static boolean checkProperSequence(Iterator<String> itr, List<String> list,List<String> list2) {
+        boolean isProperSequence = true;
+        int i = 0;
+        itr = list.listIterator();
+        while(itr.hasNext()) {
+            String temp = itr.next();
+            if (!(temp.equals(list2.get(i)))) {
+                isProperSequence = false;
+                break;
+            }
+            i++;
+        }
+        return isProperSequence;
+    }
+
     public static void iteratorAllowToIterateInProperSequenceTest() {
        // given
        List<String> list2 = getTheSameTypeOfList(list);
        list.addAll(getExampleSet());
        list2.addAll(getExampleSet());
-       boolean isProperSequence = true;
-       int i = 0;
-       // when
-        Iterator<String> itr = list.iterator();
-       while(itr.hasNext()) {
-           String temp = itr.next();
-           if (!(temp.equals(list2.get(i)))) {
-               isProperSequence = false;
-               break;
-           }
-           i++;
-       }
-       // then
-       assert isProperSequence : "Iterator did not allow for iterate in proper sequence";
+       Iterator<String> itr = list.iterator();
+       // when - then
+       assert checkProperSequence(itr, list, list2) : "Iterator did not allow for iterate in proper sequence";
+    }
+
+    public static void iteratorHasNextReturnFalseWhenIsNoNextElementTest() {
+        // given
+        list.add("firstAndLast");
+        Iterator<String> iter = list.iterator();
+        iter.next();
+        // when - then
+        assert !iter.hasNext() : "Has next should return false when in fact returned true";
+    }
+
+    public static void iteratorNextThrowNoSuchElementExceptionWhenHasNoMoreElementTest() {
+        // given
+        list.add("firstAndLast");
+        Iterator<String> iter = list.iterator();
+        iter.next();
+        boolean wasCaught = false;
+        // when
+        try {
+            iter.next();
+        } catch (NoSuchElementException e) {
+            wasCaught = true;
+        }
+        // then
+        assert wasCaught : "Exception has not been caught";
     }
 
     public static void lastIndexOfReturnProperIndexOfFSearchedElementTest() {
@@ -474,6 +502,40 @@ public class ListTests {
         list.add(toCheck);
         // when - then
         assert list.lastIndexOf(toCheck) == 7 : "Returned last index in not correct";
+    }
+
+    public static void listIteratorAllowToIterateInProperSequenceTest() {
+        // given
+        List<String> list2 = getTheSameTypeOfList(list);
+        list.addAll(getExampleSet());
+        list2.addAll(getExampleSet());
+        ListIterator<String> itr = list.listIterator();
+        // when - then
+        assert checkProperSequence(itr,list,list2) : "Iterator did not allow for iterate in proper sequence";
+    }
+
+    public static void listIteratorHasPreviousReturnFalseAtTheBegginingOfListTest() {
+        // given
+        list.add("firstAndLast");
+        ListIterator<String> iter = list.listIterator();
+        // when - then
+        assert !iter.hasPrevious() : "Has previous should return false when in fact returned true";
+    }
+
+    public static void iteratorNextThrowNoSuchElementExceptionWhenHasNoMoreElementTest() {
+        // given
+        list.add("firstAndLast");
+        Iterator<String> iter = list.iterator();
+        iter.next();
+        boolean wasCaught = false;
+        // when
+        try {
+            iter.next();
+        } catch (NoSuchElementException e) {
+            wasCaught = true;
+        }
+        // then
+        assert wasCaught : "Exception has not been caught";
     }
 
 }
