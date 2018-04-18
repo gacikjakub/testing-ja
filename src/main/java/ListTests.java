@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.*;
 import java.lang.reflect.*;
 
@@ -522,16 +523,360 @@ public class ListTests {
         assert !iter.hasPrevious() : "Has previous should return false when in fact returned true";
     }
 
-    public static void iteratorNextThrowNoSuchElementExceptionWhenHasNoMoreElementTest() {
+    public static void listIteratorPreviousThrowNoSuchElementExceptionAtTheBegginingOfListTest() {
         // given
         list.add("firstAndLast");
-        Iterator<String> iter = list.iterator();
-        iter.next();
+        ListIterator<String> iter = list.listIterator();
+        boolean wasCaught = false;
+        // when
+        try {
+            iter.previous();
+        } catch (NoSuchElementException e) {
+            wasCaught = true;
+        }
+        // then
+        assert wasCaught : "Exception has not been caught";
+    }
+
+    public static void listIteratorAllowToIterateInProperSequenceStartedFromCertainPositionTest() {
+        // given
+        List<String> list2 = getTheSameTypeOfList(list);
+        list.addAll(getExampleSet());
+        list.addAll(getExampleSet());
+        list2.addAll(getExampleSet());
+        list2.addAll(getExampleSet());
+        boolean isProperSequence = true;
+        int i = list2.size()-1;
+        ListIterator<String> itr = list.listIterator(list.size());
+        // when
+        while(itr.hasPrevious()) {
+            String temp = itr.previous();
+            if (!(temp.equals(list2.get(i)))) {
+                isProperSequence = false;
+                break;
+            }
+            i--;
+        }
+        // then
+        assert isProperSequence : "Iterator did not allow for iterate in proper sequence";
+    }
+
+    public static void listIteratorHasNextReturnFalseAtTheEndOfListTest() {
+        // given
+        list.addAll(getExampleSet());
+        ListIterator<String> iter = list.listIterator(list.size());
+        // when - then
+        assert !iter.hasNext() : "Has next should return false when in fact returned true";
+    }
+
+    public static void listIteratorNextThrowNoSuchElementExceptionAtTheEndOfListTest() {
+        // given
+        list.addAll(getExampleSet());
+        ListIterator<String> iter = list.listIterator(list.size());
         boolean wasCaught = false;
         // when
         try {
             iter.next();
         } catch (NoSuchElementException e) {
+            wasCaught = true;
+        }
+        // then
+        assert wasCaught : "Exception has not been caught";
+    }
+
+    public static void removePropertlyDeleteFirstOccurenceOfElementInListTest() {
+        // given
+        list.addAll(getExampleSet());
+        list.addAll(getExampleSet());
+        list.remove(FIRST_TO_ADD);
+        int occurence = 0;
+        // when
+        for (String temp : list) {
+            if (temp.equals(FIRST_TO_ADD)) {
+                occurence++;
+            }
+        }
+        // then
+        assert occurence==1 : "Element is still in list after remove";
+    }
+
+    public static void removeReturnTrueWhenElementHasBeenRemovedFromListTest() {
+        // given
+        list.addAll(getExampleSet());
+        // when - then
+        assert list.remove(FIRST_TO_ADD) : "Remove should return true but returned false";
+    }
+
+    public static void removeReturnFalseWhenElementDoesNotExistInListTest() {
+        // given
+        String toDelete = "I'm not in list";
+        list.addAll(getExampleSet());
+        // when - then
+        assert !list.remove(toDelete) : "Remove should return false but returned true";
+    }
+
+    public static void removeReturnRemovedElementByIndexTest() {
+        // given
+        list.addAll(getExampleSet());
+        // when - then
+        assert list.remove(2).equals(LAST_TO_ADD) : "Incorrect element was returned by remove method";
+    }
+
+    public static void removeByIndexPropertlyDeleteElementFromListTest() {
+        // given
+        list.addAll(getExampleSet());
+        // when
+        list.remove(0);
+        // then
+        assert !list.contains(FIRST_TO_ADD) : "Element is still in list after remove";
+    }
+
+    public static void removeByIndexThrowIndexOutOfBoundExceptionWhenGivenIndexIsNotInRangeTest() {
+        // given
+        list.addAll(getExampleSet());
+        boolean wasCaught = false;
+        // when
+        try {
+            list.remove(10);
+        }
+        catch (IndexOutOfBoundsException e) {
+            wasCaught = true;
+        }
+        // then
+        assert wasCaught : "Exception has not benn caught";
+    }
+
+    public static void removeAllRemovesAllOccurencesOfElementsInGivenCollectiontest() {
+        // given
+        list.add("Random text");
+        list.addAll(getExampleSet());
+        list.add("Another Random Text");
+        list.addAll(getExampleSet());
+        boolean allWasRemoved = true;
+        // when
+        list.removeAll(getExampleSet());
+        for (String temp : list) {
+            if (getExampleSet().contains(temp)) {
+                allWasRemoved = false;
+                break;
+            }
+        }
+        // then
+        assert allWasRemoved : "Elements has not been removed correctly";
+    }
+
+    public static void removeAllReturnTrueWhenRemovedAtLeastOneElementsGivenAsCollectionWhenAnotherNotExistInListTest() {
+        // given
+        list.add("Random text");
+        list.addAll(getExampleSet());
+        list.add("Another Random Text");
+        // when -  then
+        assert list.removeAll(getExampleSet()) : "removeAll should return true but in fact it returned false";
+    }
+
+    public static void removeAllReturnFalseWhenNoOneElementsGivenAsCollectionWasNotRemoved() {
+        // given
+        list.add("Random text");
+        list.add("Another Random Text");
+        // when - then
+        assert !list.removeAll(getExampleSet()) : "removeAll should return false but in fact it returned true";
+    }
+
+    public static void replaceAllChangeAllElementsInListInCerteinKindOfThisTest() {
+        // given
+        boolean allWasChanged = true;
+        list.addAll(getExampleSet());
+        // when
+        list.replaceAll(temp -> {return temp.toUpperCase();});
+        // then
+        int i = 0;
+        for (String temp : getExampleSet()) {
+            if (!temp.toUpperCase().equals(list.get(i))) {
+                allWasChanged = false;
+                break;
+            }
+            i++;
+        }
+        assert allWasChanged : "Not All elements have been changed";
+    }
+    // TODO: Make more tests for replaceAll
+
+    public static void retainAllRemovesAllElementsFromListWithIsNotInGivenCollectionTest() {
+        // given
+        List<String> list2 = getTheSameTypeOfList(list);
+        list.add("Random first");
+        list.addAll(getExampleSet());
+        list.add("Random second");
+        list.addAll(getExampleSet());
+        list2.addAll(getExampleSet());
+        list2.addAll(getExampleSet());
+        // when
+        list.retainAll(getExampleSet());
+        // then
+        assert list.equals(list2) : "Not All Elements Have Been Removed";
+    }
+
+    public static void retainAllReturnTrueWhenListHasBeenChangedTest() {
+        // given
+        list.add("Random first");
+        list.addAll(getExampleSet());
+        list.add("Random second");
+        list.addAll(getExampleSet());
+        // when - then
+        assert list.retainAll(getExampleSet()) : "retainAll returned false but in fact should return true";
+    }
+
+    public static void retainAllReturnFalseWhenListHasNotBeenChangedTest() {
+        // given
+        list.addAll(getExampleSet());
+        list.addAll(getExampleSet());
+        // when - then
+        assert !list.retainAll(getExampleSet()) : "retainAll returned true but in fact should return false";
+    }
+
+    public static void setMethodChangeElementOfListPropertlyTest() {
+        // given
+        String elemToReplace = "I'm pretty new";
+        list.addAll(getExampleSet());
+        // when
+        list.set(1,elemToReplace);
+        // then
+        assert list.get(1).equals(elemToReplace) : "Chosen element has not been changed";
+    }
+
+    public static void setMethodReturnOldElementOfListPropertlyTest() {
+        // given
+        String elemToReplace = "I'm pretty new";
+        list.addAll(getExampleSet());
+        // when - then
+        assert list.set(2,elemToReplace).equals(LAST_TO_ADD) : "set method did not return previous element of list";
+    }
+
+    public static void setMethodThrowIndexOutOfBoundExceptionWhenGivenIndexIsOutOfRangeTest() {
+        // given
+        boolean wasCaught = false;
+        list.addAll(getExampleSet());
+        // when
+        try {
+            list.set(10, "sth");
+        } catch (IndexOutOfBoundsException e) {
+            wasCaught = true;
+        }
+        // then
+        assert wasCaught : "Exception has not been caught";
+    }
+
+    public static void sizeReturnZeroWhenAllElementsHaveBeenRemovedTest() {
+        // given
+        list.addAll(getExampleSet());
+        list.removeAll(getExampleSet());
+        // when - then
+        assert list.size()==0 : "size returned value different than 0";
+    }
+
+    public static void sizeReturnProperValueAfterAddingSomeElementsTest() {
+        // given
+        list.addAll(getExampleSet());
+        // when - then
+        assert list.size()==3 : "size returned value different than quantity of elements";
+    }
+
+    public static void sizeReturnProperValueAfterRemovingElementWhichNotExistInListTest() {
+        // given
+        list.addAll(getExampleSet());
+        list.remove("different");
+        // when - then
+        assert list.size()==3 : "size returned incorrect value";
+    }
+
+    public static void sortAllowToChangeIndexOfElementsInListRelatedWithGivenComparatorTest() {
+        // given
+        List<String> list2 = getTheSameTypeOfList(list);
+        list.addAll(Arrays.asList("C","D","F","B","E","A"));
+        list2.addAll(Arrays.asList("A","B","C","D","E","F"));
+        // when
+        list.sort(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+               return o1.compareTo(o2);
+            }
+        });
+        // then
+        assert list.equals(list2) : "List has not been sorted correctly";
+    }
+    //TODO: Make more tests for sort method
+
+    public static void spliteratorCreatesAndReturnsCorrectSpliteratorTest() {
+        // given
+        list.add("some First");
+        list.addAll(getExampleSet());
+        list.add("some middle");
+        list.addAll(getExampleSet());
+        Spliterator<String> spliterator = list.spliterator();
+        // when - then
+        assert spliterator.estimateSize()==8 : "spliterator method returned incorrect Spliterator";
+    }
+
+    //TODO: Make more tests for spliterator
+
+    public static void subListReturnsProperListTest() {
+        // given
+        list.add("some First");
+        list.addAll(getExampleSet());
+        List<String> list2 = getTheSameTypeOfList(list);
+        list2.addAll(getExampleSet());
+        // when - then
+        assert list.subList(1,4).equals(list2) : "subList method return incorrect list";
+    }
+
+    public static void subListThrowIndexOutOfBoundExceptionWhenGivenIndexesWhichAreOutOfRangeTest() {
+        // given
+        list.addAll(getExampleSet());
+        list.addAll(getExampleSet());
+        boolean wasCaught = false;
+        // when
+        try {
+            list.subList(4,20);
+        } catch (IndexOutOfBoundsException e) {
+            wasCaught = true;
+        }
+        // then
+        assert wasCaught : "Exception has not been caught";
+    }
+
+    public static void subListReturnsEmptyListWhenStartAndEndPointIsTheSameTest() {
+        // given
+        list.addAll(getExampleSet());
+        // when - then
+        assert list.subList(1,1).isEmpty() : "subList is not Empty";
+    }
+
+    public static void toArrayReturnArrayFormListInProperSequenceTest() {
+        // given
+        list.addAll(getExampleSet());
+        boolean inProperSequence = true;
+        int i=0;
+        // when
+        String[] sArray = list.toArray(new String[0]);
+        for(String temp :list) {
+            if(!temp.equals(sArray[i])) {
+                inProperSequence = false;
+                break;
+            }
+            i++;
+        }
+        // then
+        assert inProperSequence : "toArray return array in not proper sequence";
+    }
+
+    public static void toArrayThrowNullPointerExceptionWhenSpecifiedArrayIsNull() {
+        // given
+        list.addAll(getExampleSet());
+        boolean wasCaught = false;
+        // when
+        try {
+            list.toArray(null);
+        } catch (NullPointerException e) {
             wasCaught = true;
         }
         // then
