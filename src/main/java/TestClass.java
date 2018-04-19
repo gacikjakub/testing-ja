@@ -1,15 +1,38 @@
 import java.lang.annotation.*;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
 public class TestClass {
 
+    public TestClass() {
+        classToTest.add(this.getClass());
+//        Arrays.stream(getClass().getClasses()).forEach(c -> System.out.println(c.getSimpleName()));
+    }
+
+    public static void main(String[] args){
+//        try {
+//            Field f = ClassLoader.class.getDeclaredField("classes");
+//            f.setAccessible(true);
+//
+//
+//            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+//            classToTest.addAll((Vector<Class>) f.get(classLoader));
+//            TestClass testing = new TestClass();
+//            testing.runTests();
+//        } catch (Throwable t) {
+//            System.out.printf("TestClass Constructor Problem");
+//        }
+//        TestClass t = new TestClass();
+    }
+
     private List<Throwable> caughtExceptions = new LinkedList<>();
     private Method beforeTest;
     private Method afterTest;
-    private int passedCounter=0;
-    private int failedCounter=0;
+    private static int passedCounter=0;
+    private static int failedCounter=0;
     private Method[] declaredMethods;
+    private static List<Class> classToTest = new LinkedList<>();
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
@@ -23,6 +46,10 @@ public class TestClass {
     @Target(ElementType.METHOD)
     public @interface AfterTest {}
 
+//    @Retention(RetentionPolicy.RUNTIME)
+//    @Target(ElementType.TYPE)
+//    public @interface TestingClass {}
+
     private void emptyMethod() {}
 
 
@@ -30,10 +57,10 @@ public class TestClass {
         afterTest = returnOnlyOne(declaredMethods, AfterTest.class);
         beforeTest = returnOnlyOne(declaredMethods, BeforeTest.class);
         if (beforeTest == null) {
-            beforeTest = TestClass.class.getMethod("emptyMethod");
+            beforeTest = TestClass.class.getDeclaredMethod("emptyMethod");
         }
         if (afterTest == null) {
-            afterTest = TestClass.class.getMethod("emptyMethod");
+            afterTest = TestClass.class.getDeclaredMethod("emptyMethod");
         }
     }
 
@@ -45,9 +72,6 @@ public class TestClass {
         return result[0];
     }
 
-    private void runTests(Method[] declaredMethods) {
-
-    }
 
     private void showCaughtException() {
         caughtExceptions.stream().forEach(e -> {
@@ -57,13 +81,23 @@ public class TestClass {
         });
     }
 
-    public void main(String[] args) {
-        declaredMethods = TestClass.class.getDeclaredMethods();
+    public void runTests() {
+        for(Class toTest : classToTest) {
+            runClassTests(toTest);
+        }
+        showCaughtException();
+        System.out.println("PASSED: " + passedCounter);
+        System.out.println("FAILED: " + failedCounter);
+    }
+
+    public void runClassTests(Class toTest) {
+        declaredMethods = toTest.getDeclaredMethods();
         try {
             checkAndInitBeforeAndAfter(declaredMethods);
         } catch (Throwable t) {
             Arrays.stream(t.getStackTrace()).forEach(ste -> System.out.println(ste));
             System.out.println(t.getMessage());
+            System.exit(1);
         }
         try {
             Arrays.stream(declaredMethods).filter(m -> m.isAnnotationPresent(Test.class)).forEach(m -> {
@@ -74,8 +108,10 @@ public class TestClass {
                 }
                 try {
                     m.invoke(this);
+                    passedCounter++;
                 } catch (Throwable t) {
                     caughtExceptions.add(t);
+                    failedCounter++;
                 }
                 try {
                     afterTest.invoke(this);

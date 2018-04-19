@@ -1,25 +1,21 @@
-import java.sql.SQLOutput;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
-import java.lang.reflect.*;
 
-public class ListTests {
+//@TestClass.TestingClass
+public class ListTests extends TestClass{
 
     private static List<String> list;
     final static String FIRST_TO_ADD = "firstNew";
     final static String LAST_TO_ADD = "thirdNew";
 
-    public static void main(String[] args) throws Exception {
-        for( Method method: ListTests.class.getDeclaredMethods()) {
-            if (!method.getName().equals("main") && Modifier.isPublic(method.getModifiers()) && Modifier.isStatic(method.getModifiers())) {
-                setUpArrayList();
-                method.invoke(null);
-                setUpLinkedList();
-                method.invoke(null);
-            }
-        }
-    }
+//    public static void main(String[] args) throws Exception {
+//        ListTests tests = new ListTests();
+//        tests.runTests();
+//    }
 
-    private static void setUpArrayList() {
+    @TestClass.BeforeTest
+    public void setUpArrayList() {
         list = new ArrayList<>();
     }
 
@@ -27,6 +23,7 @@ public class ListTests {
         list = new LinkedList<>();
     }
 
+    @TestClass.Test
     public static void addElementToEmptyListTest() {
         // given
         // when
@@ -37,6 +34,7 @@ public class ListTests {
         assert onPositionWhereHasBeenAdded.equals("first") : "Last element is not correct";
     }
 
+    @TestClass.Test
     public static void addElementToListOnLastPositionTest() {
         // given
         list.add("first");
@@ -48,6 +46,7 @@ public class ListTests {
         assert onPositionWhereHasBeenAdded.equals("last") : "Last element is not correct";
     }
 
+    @TestClass.Test
     public static void addSameElementTwoTimesTest() {
         // given
             String phrase = "It's raining men";
@@ -62,6 +61,7 @@ public class ListTests {
         assert second.equals(first) : "Value added second time is not the same as first one";
     }
 
+    @TestClass.Test
     public static void addElementToListOnCertainPositionTest() {
         // given
             String text = "... at the afternoon - it makes me feel alright";
@@ -73,6 +73,7 @@ public class ListTests {
         assert list.get(1).equals(text) : "Element pos 1 is not correct";
     }
 
+    @TestClass.Test
     public static void addElementOnPositionLessThenZeroShouldThrowExceptionTest() {
         // given
         boolean wasCaught = false;
@@ -86,6 +87,7 @@ public class ListTests {
         assert wasCaught : "Exception has not been caught";
     }
 
+    @TestClass.Test
     public static void addElementOnPositionBiggerThenLastElementShouldThrowExceptionTest() {
         // given
         boolean wasCaught = false;
@@ -108,6 +110,7 @@ public class ListTests {
         return toAdd;
     }
 
+    @TestClass.Test
     public static void addAllShouldAddGivenCollectionAtTheEndOfChangingListTest() {
         // given
         List<AssertionError> linkedErrors = new LinkedList<>();
@@ -121,6 +124,7 @@ public class ListTests {
         assert list.get(3).equals(LAST_TO_ADD) : "Added last element is not correct";
     }
 
+    @TestClass.Test
     public static void addAllShouldPropertlyAddCollectionToEmptyListTest() {
         // given
         Set<String> toAdd = getExampleSet();
@@ -132,6 +136,7 @@ public class ListTests {
         assert list.get(2).equals(LAST_TO_ADD) : "Added last element is not correct";
     }
 
+    @TestClass.Test
     public static void addAllThrowNullPointerExceptionWhenArgumentIsNull() {
         // given
         boolean wasCaught = false;
@@ -145,6 +150,7 @@ public class ListTests {
         assert wasCaught : "NullPointerException has not been caught";
     }
 
+    @TestClass.Test
     public static void addAllShouldPropertlyAddCollectionInTheMiddleOfList() {
         // given
         final String willBeLast = "second";
@@ -159,6 +165,7 @@ public class ListTests {
         assert list.get(4).equals(willBeLast) : "Last element before add before them is not on last position after add";
     }
 
+    @TestClass.Test
     public static void addAllCollectionOnPositionLessThenZeroShouldThrowExceptionTest() {
         // given
         boolean wasCaught = false;
@@ -172,6 +179,7 @@ public class ListTests {
         assert wasCaught : "Exception has not been caught";
     }
 
+    @TestClass.Test
     public static void addAllColectionOnPositionBiggerThenLastElementShouldThrowExceptionTest() {
         // given
         boolean wasCaught = false;
@@ -186,6 +194,7 @@ public class ListTests {
         assert wasCaught : "Exception has not been caught";
     }
 
+    @TestClass.Test
     public static void clearShouldRemoveAllElementsFromListTest() {
         // given
         String elemToAdd = "one";
@@ -198,6 +207,7 @@ public class ListTests {
         assert !list.contains(elemToAdd) : "List contain element added before clear";
     }
 
+    @TestClass.Test
     public static void clearShouldChangeSizeToZeroTest() {
         // given
         list.add("one");
@@ -207,6 +217,7 @@ public class ListTests {
         assert list.size()==0 : "List contain element added before clear";
     }
 
+    @TestClass.Test
     public static void clearCanBeUsedOnEmptyListTest() {
         // given
         boolean wasCaught = false;
@@ -221,6 +232,7 @@ public class ListTests {
         assert !wasCaught : "Exception has been caught";
     }
 
+    @TestClass.Test
     public static void containsShouldReturnTrueIfElementIsInTheListTest() {
         // given
         list.add(FIRST_TO_ADD);
@@ -228,6 +240,7 @@ public class ListTests {
         assert list.contains(FIRST_TO_ADD) : "Contains did not find element which in fact is in the list";
     }
 
+    @TestClass.Test
     public static void containsAllowExecuteWithNullAsArgumentTest() {
         // given
         boolean wasCaught = false;
@@ -244,6 +257,7 @@ public class ListTests {
         assert wasReturned: "contains(null) returned false, but null was added to List";
     }
 
+    @TestClass.Test
     public static void containsShouldReturnFalseIfElementIsNotInListTest() {
         // given
         list.add(FIRST_TO_ADD);
@@ -251,6 +265,7 @@ public class ListTests {
         assert !list.contains(LAST_TO_ADD) : "Contains returned true, but in fact should returned false because element is not in the list";
     }
 
+    @TestClass.Test
     public static void constainsAllShouldReturnTrueWhenThisListHasAllEmenetsFromSpecifiedColectionTest() {
         // given
         list.add("first");
@@ -260,6 +275,7 @@ public class ListTests {
         assert list.containsAll(getExampleSet()) : "ConstainsAll returned false when actually list has all elements from specified collection";
     }
 
+    @TestClass.Test
     public static void constainsAllShouldReturnTrueWhenThisListHasAllEmenetsFromSpecifiedColectionNotInRowTest() {
         // given
         list.add("first");
@@ -269,6 +285,7 @@ public class ListTests {
         assert list.containsAll(getExampleSet()) : "ConstainsAll returned false when actually list has all elements from specified collection";
     }
 
+    @TestClass.Test
     public static void containsAllShouldThrowNullPointerExceptionWhenSpecifiedCollectionIsNullTest() {
         // given
         boolean wasCaught = false;
@@ -290,6 +307,7 @@ public class ListTests {
         }
     }
 
+    @TestClass.Test
     public static void equalsReturnTrueWhenTwoListHasTheSameElementsInTheSameOrderTest() {
         // given
         list.addAll(getExampleSet());
@@ -299,6 +317,7 @@ public class ListTests {
         assert list.equals(list2) : "Equals returned false when in fact lists has the same elements and the same arder";
     }
 
+    @TestClass.Test
     public static void equalsReturnFalseWhenTwoListHasTheSameElementsInDifferentOrderTest() {
         // given
         String toAdd = "This text must be unique";
@@ -311,6 +330,7 @@ public class ListTests {
         assert !list.equals(list2) : "Equals returned false when in fact lists has the same elements and the same arder";
     }
 
+    @TestClass.Test
     public static void equalsReturnFalseWhenCompareTwoDifferentTypesCollectionAlthoughTheHaveTheSameElementsInTheSameOrderTest() {
         // given
         list.addAll(getExampleSet());
@@ -318,6 +338,7 @@ public class ListTests {
         assert !list.equals(getExampleSet()) : "Equals returned true when in fact it compared different types of collection although the same order of elements";
     }
 
+    @TestClass.Test
     public static void getReturnElementFromListCorrectlyTest() {
         // given
         list.add("This is also unique - first");
@@ -326,6 +347,7 @@ public class ListTests {
         assert list.get(1).equals(FIRST_TO_ADD) : "Get returned incorrect element";
     }
 
+    @TestClass.Test
     public static void getThrowIndexOfBoundExceptionWhenGivenArgumentIsLowerThenZeroTest() {
         // given
         boolean wasCaught = false;
@@ -340,6 +362,7 @@ public class ListTests {
         assert wasCaught : "Exception has not been caught";
     }
 
+    @TestClass.Test
     public static void getThrowIndexOfBoundExceptionWhenGivenArgumentIsBiggerThenSizeTest() {
         // given
         boolean wasCaught = false;
@@ -354,6 +377,7 @@ public class ListTests {
         assert wasCaught : "Exception has not been caught";
     }
 
+    @TestClass.Test
     public static void twoListsWithTheSameContentShouldHaveTheSameHashCodesTest() {
         // given
         list.addAll(getExampleSet());
@@ -363,6 +387,7 @@ public class ListTests {
         assert list.hashCode() == list2.hashCode() : "Same lists have the different hashCode";
     }
 
+    @TestClass.Test
     public static void twoListsWithDifferentContentShouldDifferentHashCodesTest() {
         // given
         list.addAll(getExampleSet());
@@ -374,12 +399,14 @@ public class ListTests {
         assert list.hashCode() != list2.hashCode() : "Different lists have the same hashCode";
     }
 
+    @TestClass.Test
     public static void emptyListsHashCodeIsEqualOneTest() {
         // when - then
         assert list.hashCode() == 1 : "Empty list has hashCode different that one";
         assert getTheSameTypeOfList(list).hashCode() == 1 : "Another empty list has hashCode different than one";
     }
 
+    @TestClass.Test
     public static void indexOfReturnProperIndexOfFSearchedElementTest() {
         // given
         list.add("initElemOfList");
@@ -389,6 +416,7 @@ public class ListTests {
         assert list.indexOf(LAST_TO_ADD) == 3 : "Returned last index in not correct";
     }
 
+    @TestClass.Test
     public static void indexOfReturnMinusOneValueWhenSearchedElementIsNotInListTest() {
         // given
         list.addAll(getExampleSet());
@@ -396,6 +424,7 @@ public class ListTests {
         assert list.indexOf("notExistingElem") == -1 : "Returned first index in not correct";
     }
 
+    @TestClass.Test
     public static void indexOfReturnFirstIndexOfTheSameObjectInListTest() {
         // given
         String toCheck = "toCheck";
@@ -407,11 +436,13 @@ public class ListTests {
         assert list.indexOf(toCheck) == 3 : "Returned first index in not correct";
     }
 
+    @TestClass.Test
     public static void isEmptyReturnTrueWhenWasNothingAddedToListTest() {
         // when - then
         assert list.isEmpty() : "isEmpty returned false when in fact should return true";
     }
 
+    @TestClass.Test
     public static void isEmptyReturnFalseWhenWasAddedAtLeastOneElementToListTest() {
         // given
         list.add(null);
@@ -419,6 +450,7 @@ public class ListTests {
         assert !list.isEmpty() : "isEmpty returned true when in fact should return false";
     }
 
+    @TestClass.Test
     public static void isEmptyReturnTrueWhenSthWasAddedAndRemovedFromListTest() {
         //given
         String temp = "I'll be remove";
@@ -443,6 +475,7 @@ public class ListTests {
         return isProperSequence;
     }
 
+    @TestClass.Test
     public static void iteratorAllowToIterateInProperSequenceTest() {
        // given
        List<String> list2 = getTheSameTypeOfList(list);
@@ -453,6 +486,7 @@ public class ListTests {
        assert checkProperSequence(itr, list, list2) : "Iterator did not allow for iterate in proper sequence";
     }
 
+    @TestClass.Test
     public static void iteratorHasNextReturnFalseWhenIsNoNextElementTest() {
         // given
         list.add("firstAndLast");
@@ -462,6 +496,7 @@ public class ListTests {
         assert !iter.hasNext() : "Has next should return false when in fact returned true";
     }
 
+    @TestClass.Test
     public static void iteratorNextThrowNoSuchElementExceptionWhenHasNoMoreElementTest() {
         // given
         list.add("firstAndLast");
@@ -478,6 +513,7 @@ public class ListTests {
         assert wasCaught : "Exception has not been caught";
     }
 
+    @TestClass.Test
     public static void lastIndexOfReturnProperIndexOfFSearchedElementTest() {
         // given
         list.add("initElemOfList");
@@ -487,6 +523,7 @@ public class ListTests {
         assert list.lastIndexOf(LAST_TO_ADD) == 3 : "Returned last index in not correct";
     }
 
+    @TestClass.Test
     public static void lastIndexOfReturnMinusOneValueWhenSearchedElementIsNotInListTest() {
         // given
         list.addAll(getExampleSet());
@@ -494,6 +531,7 @@ public class ListTests {
         assert list.lastIndexOf("notExistingElem") == -1 : "Returned first index in not correct";
     }
 
+    @TestClass.Test
     public static void lastIndexOfReturnLastIndexOfTheSameObjectInListTest() {
         // given
         String toCheck = "toCheck";
@@ -505,6 +543,7 @@ public class ListTests {
         assert list.lastIndexOf(toCheck) == 7 : "Returned last index in not correct";
     }
 
+    @TestClass.Test
     public static void listIteratorAllowToIterateInProperSequenceTest() {
         // given
         List<String> list2 = getTheSameTypeOfList(list);
@@ -515,6 +554,7 @@ public class ListTests {
         assert checkProperSequence(itr,list,list2) : "Iterator did not allow for iterate in proper sequence";
     }
 
+    @TestClass.Test
     public static void listIteratorHasPreviousReturnFalseAtTheBegginingOfListTest() {
         // given
         list.add("firstAndLast");
@@ -523,6 +563,7 @@ public class ListTests {
         assert !iter.hasPrevious() : "Has previous should return false when in fact returned true";
     }
 
+    @TestClass.Test
     public static void listIteratorPreviousThrowNoSuchElementExceptionAtTheBegginingOfListTest() {
         // given
         list.add("firstAndLast");
@@ -538,6 +579,7 @@ public class ListTests {
         assert wasCaught : "Exception has not been caught";
     }
 
+    @TestClass.Test
     public static void listIteratorAllowToIterateInProperSequenceStartedFromCertainPositionTest() {
         // given
         List<String> list2 = getTheSameTypeOfList(list);
@@ -561,6 +603,7 @@ public class ListTests {
         assert isProperSequence : "Iterator did not allow for iterate in proper sequence";
     }
 
+    @TestClass.Test
     public static void listIteratorHasNextReturnFalseAtTheEndOfListTest() {
         // given
         list.addAll(getExampleSet());
@@ -569,6 +612,7 @@ public class ListTests {
         assert !iter.hasNext() : "Has next should return false when in fact returned true";
     }
 
+    @TestClass.Test
     public static void listIteratorNextThrowNoSuchElementExceptionAtTheEndOfListTest() {
         // given
         list.addAll(getExampleSet());
@@ -584,6 +628,7 @@ public class ListTests {
         assert wasCaught : "Exception has not been caught";
     }
 
+    @TestClass.Test
     public static void removePropertlyDeleteFirstOccurenceOfElementInListTest() {
         // given
         list.addAll(getExampleSet());
@@ -600,6 +645,7 @@ public class ListTests {
         assert occurence==1 : "Element is still in list after remove";
     }
 
+    @TestClass.Test
     public static void removeReturnTrueWhenElementHasBeenRemovedFromListTest() {
         // given
         list.addAll(getExampleSet());
@@ -607,6 +653,7 @@ public class ListTests {
         assert list.remove(FIRST_TO_ADD) : "Remove should return true but returned false";
     }
 
+    @TestClass.Test
     public static void removeReturnFalseWhenElementDoesNotExistInListTest() {
         // given
         String toDelete = "I'm not in list";
@@ -615,6 +662,7 @@ public class ListTests {
         assert !list.remove(toDelete) : "Remove should return false but returned true";
     }
 
+    @TestClass.Test
     public static void removeReturnRemovedElementByIndexTest() {
         // given
         list.addAll(getExampleSet());
@@ -622,6 +670,7 @@ public class ListTests {
         assert list.remove(2).equals(LAST_TO_ADD) : "Incorrect element was returned by remove method";
     }
 
+    @TestClass.Test
     public static void removeByIndexPropertlyDeleteElementFromListTest() {
         // given
         list.addAll(getExampleSet());
@@ -631,6 +680,7 @@ public class ListTests {
         assert !list.contains(FIRST_TO_ADD) : "Element is still in list after remove";
     }
 
+    @TestClass.Test
     public static void removeByIndexThrowIndexOutOfBoundExceptionWhenGivenIndexIsNotInRangeTest() {
         // given
         list.addAll(getExampleSet());
@@ -646,6 +696,7 @@ public class ListTests {
         assert wasCaught : "Exception has not benn caught";
     }
 
+    @TestClass.Test
     public static void removeAllRemovesAllOccurencesOfElementsInGivenCollectiontest() {
         // given
         list.add("Random text");
@@ -665,6 +716,7 @@ public class ListTests {
         assert allWasRemoved : "Elements has not been removed correctly";
     }
 
+    @TestClass.Test
     public static void removeAllReturnTrueWhenRemovedAtLeastOneElementsGivenAsCollectionWhenAnotherNotExistInListTest() {
         // given
         list.add("Random text");
@@ -674,6 +726,7 @@ public class ListTests {
         assert list.removeAll(getExampleSet()) : "removeAll should return true but in fact it returned false";
     }
 
+    @TestClass.Test
     public static void removeAllReturnFalseWhenNoOneElementsGivenAsCollectionWasNotRemoved() {
         // given
         list.add("Random text");
@@ -682,6 +735,7 @@ public class ListTests {
         assert !list.removeAll(getExampleSet()) : "removeAll should return false but in fact it returned true";
     }
 
+    @TestClass.Test
     public static void replaceAllChangeAllElementsInListInCerteinKindOfThisTest() {
         // given
         boolean allWasChanged = true;
@@ -701,6 +755,7 @@ public class ListTests {
     }
     // TODO: Make more tests for replaceAll
 
+    @TestClass.Test
     public static void retainAllRemovesAllElementsFromListWithIsNotInGivenCollectionTest() {
         // given
         List<String> list2 = getTheSameTypeOfList(list);
@@ -716,6 +771,7 @@ public class ListTests {
         assert list.equals(list2) : "Not All Elements Have Been Removed";
     }
 
+    @TestClass.Test
     public static void retainAllReturnTrueWhenListHasBeenChangedTest() {
         // given
         list.add("Random first");
@@ -726,6 +782,7 @@ public class ListTests {
         assert list.retainAll(getExampleSet()) : "retainAll returned false but in fact should return true";
     }
 
+    @TestClass.Test
     public static void retainAllReturnFalseWhenListHasNotBeenChangedTest() {
         // given
         list.addAll(getExampleSet());
@@ -734,6 +791,7 @@ public class ListTests {
         assert !list.retainAll(getExampleSet()) : "retainAll returned true but in fact should return false";
     }
 
+    @TestClass.Test
     public static void setMethodChangeElementOfListPropertlyTest() {
         // given
         String elemToReplace = "I'm pretty new";
@@ -744,6 +802,7 @@ public class ListTests {
         assert list.get(1).equals(elemToReplace) : "Chosen element has not been changed";
     }
 
+    @TestClass.Test
     public static void setMethodReturnOldElementOfListPropertlyTest() {
         // given
         String elemToReplace = "I'm pretty new";
@@ -752,6 +811,7 @@ public class ListTests {
         assert list.set(2,elemToReplace).equals(LAST_TO_ADD) : "set method did not return previous element of list";
     }
 
+    @TestClass.Test
     public static void setMethodThrowIndexOutOfBoundExceptionWhenGivenIndexIsOutOfRangeTest() {
         // given
         boolean wasCaught = false;
@@ -766,6 +826,7 @@ public class ListTests {
         assert wasCaught : "Exception has not been caught";
     }
 
+    @TestClass.Test
     public static void sizeReturnZeroWhenAllElementsHaveBeenRemovedTest() {
         // given
         list.addAll(getExampleSet());
@@ -774,6 +835,7 @@ public class ListTests {
         assert list.size()==0 : "size returned value different than 0";
     }
 
+    @TestClass.Test
     public static void sizeReturnProperValueAfterAddingSomeElementsTest() {
         // given
         list.addAll(getExampleSet());
@@ -781,6 +843,7 @@ public class ListTests {
         assert list.size()==3 : "size returned value different than quantity of elements";
     }
 
+    @TestClass.Test
     public static void sizeReturnProperValueAfterRemovingElementWhichNotExistInListTest() {
         // given
         list.addAll(getExampleSet());
@@ -789,6 +852,7 @@ public class ListTests {
         assert list.size()==3 : "size returned incorrect value";
     }
 
+    @TestClass.Test
     public static void sortAllowToChangeIndexOfElementsInListRelatedWithGivenComparatorTest() {
         // given
         List<String> list2 = getTheSameTypeOfList(list);
@@ -806,6 +870,7 @@ public class ListTests {
     }
     //TODO: Make more tests for sort method
 
+    @TestClass.Test
     public static void spliteratorCreatesAndReturnsCorrectSpliteratorTest() {
         // given
         list.add("some First");
@@ -816,9 +881,9 @@ public class ListTests {
         // when - then
         assert spliterator.estimateSize()==8 : "spliterator method returned incorrect Spliterator";
     }
-
     //TODO: Make more tests for spliterator
 
+    @TestClass.Test
     public static void subListReturnsProperListTest() {
         // given
         list.add("some First");
@@ -829,6 +894,7 @@ public class ListTests {
         assert list.subList(1,4).equals(list2) : "subList method return incorrect list";
     }
 
+    @TestClass.Test
     public static void subListThrowIndexOutOfBoundExceptionWhenGivenIndexesWhichAreOutOfRangeTest() {
         // given
         list.addAll(getExampleSet());
@@ -844,6 +910,7 @@ public class ListTests {
         assert wasCaught : "Exception has not been caught";
     }
 
+    @TestClass.Test
     public static void subListReturnsEmptyListWhenStartAndEndPointIsTheSameTest() {
         // given
         list.addAll(getExampleSet());
@@ -851,6 +918,7 @@ public class ListTests {
         assert list.subList(1,1).isEmpty() : "subList is not Empty";
     }
 
+    @TestClass.Test
     public static void toArrayReturnArrayFormListInProperSequenceTest() {
         // given
         list.addAll(getExampleSet());
@@ -869,6 +937,7 @@ public class ListTests {
         assert inProperSequence : "toArray return array in not proper sequence";
     }
 
+    @TestClass.Test
     public static void toArrayThrowNullPointerExceptionWhenSpecifiedArrayIsNull() {
         // given
         list.addAll(getExampleSet());
