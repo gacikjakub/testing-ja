@@ -4,12 +4,12 @@
 
 
  
-  <groupId>listTesting</groupId>
-  <artifactId>listTesting</artifactId>
+  <groupId>testingFramework</groupId>
+  <artifactId>testingFramework</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
  
-  <name>listTesting</name>
+  <name>testingFramework</name>
 
     <build>
         <plugins>

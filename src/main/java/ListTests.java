@@ -1,8 +1,9 @@
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import testingja.TestClass;
+
 import java.util.*;
 
-//@TestClass.TestingClass
+//@testingja.TestClass.TestingClass
+
 public class ListTests extends TestClass{
 
     private static List<String> list;

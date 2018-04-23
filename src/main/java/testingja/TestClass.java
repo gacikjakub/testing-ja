@@ -1,5 +1,6 @@
+package testingja;
+
 import java.lang.annotation.*;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -11,19 +12,7 @@ public class TestClass {
     }
 
     public static void main(String[] args){
-//        try {
-//            Field f = ClassLoader.class.getDeclaredField("classes");
-//            f.setAccessible(true);
-//
-//
-//            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-//            classToTest.addAll((Vector<Class>) f.get(classLoader));
-//            TestClass testing = new TestClass();
-//            testing.runTests();
-//        } catch (Throwable t) {
-//            System.out.printf("TestClass Constructor Problem");
-//        }
-//        TestClass t = new TestClass();
+        // TODO: runTest must be static and many more
     }
 
     private List<Throwable> caughtExceptions = new LinkedList<>();
@@ -33,6 +22,10 @@ public class TestClass {
     private static int failedCounter=0;
     private Method[] declaredMethods;
     private static List<Class> classToTest = new LinkedList<>();
+
+    static {
+        classToTest.add( new Object() { }.getClass().getEnclosingClass());
+    }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
@@ -81,6 +74,7 @@ public class TestClass {
         });
     }
 
+    //
     public void runTests() {
         for(Class toTest : classToTest) {
             runClassTests(toTest);
